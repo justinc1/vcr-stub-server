@@ -30,6 +30,7 @@ def BuildHandlerClassWithCassette(vcr_cassette):
 
         def _respond(self, method: str):
             request_body = None
+            # print(f"_respond method={method} path={self.path}")
 
             if "Content-Length" in self.headers:
                 request_content_length = int(self.headers["Content-Length"])

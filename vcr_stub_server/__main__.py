@@ -63,6 +63,7 @@ def main():
     handler_class = BuildHandlerClassWithCassette(vcr_cassette=vcr_cassette)
 
     print(time.asctime(), f"Starting VCR stub server for cassette: {cassette_path}")
+    print(time.asctime(), f"bla-=------------------ 223")
     http_server = HTTPServer((host, port), handler_class)
 
     try:

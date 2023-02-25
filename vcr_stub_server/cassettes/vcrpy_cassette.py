@@ -20,6 +20,7 @@ class VcrpyCassette(BaseVcrCassette):
 
         self.vcrpy_cassette = Cassette.load(path=cassette_path, **config)
         self._host = None
+        self._ind = 0
 
         for request in self.vcrpy_cassette.requests:
             parsed_url = urlparse(request.uri)
@@ -40,7 +41,20 @@ class VcrpyCassette(BaseVcrCassette):
         request = vcrpy.request.Request(method, f"{self._host}{path}", body, headers)
 
         try:
-            encoded_response = self.vcrpy_cassette.responses_of(request)[0]
+            if 0:
+                # orig code
+                encoded_response = self.vcrpy_cassette.responses_of(request)[0]
+            else:
+                # just replay in same order as recorded
+                request = self.vcrpy_cassette.requests[self._ind]
+                assert method == request.method
+                parsed_url = urlparse(request.uri)
+                assert path == parsed_url.path
+                assert body == request.body
+                # assert headers == request.headers  # order, and port
+                encoded_response = self.vcrpy_cassette.responses[self._ind]
+                # print(f"ind={self._ind}")
+                self._ind += 1
         except vcrpy.errors.UnhandledHTTPRequestError as e:
             raise ResponseNotFound(str(e))
 
